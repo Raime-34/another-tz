@@ -1,0 +1,265 @@
+definitions:
+  schemas.PeopleInfo:
+    properties:
+      address:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      passport_number:
+        type: string
+      passport_serie:
+        type: string
+      patronymic:
+        type: string
+      surname:
+        type: string
+    type: object
+  schemas.Task:
+    properties:
+      cost:
+        type: integer
+      id:
+        type: integer
+    type: object
+  schemas.TaskResult:
+    properties:
+      tasks:
+        items:
+          $ref: '#/definitions/schemas.Task'
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /people:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a person from the database by passport number
+      parameters:
+      - description: 'Passport Number (format: ''serie number'')'
+        in: query
+        name: passport_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a person
+      tags:
+      - people
+    get:
+      consumes:
+      - application/json
+      description: Get all people or filter by query parameters
+      parameters:
+      - description: Surname
+        in: query
+        name: surname
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Patronymic
+        in: query
+        name: patronymic
+        type: string
+      - description: Address
+        in: query
+        name: address
+        type: string
+      - description: Passport Serie
+        in: query
+        name: passport_serie
+        type: string
+      - description: Passport Number
+        in: query
+        name: passport_number
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schemas.PeopleInfo'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get list of people
+      tags:
+      - people
+    post:
+      consumes:
+      - application/json
+      description: Add a new person to the database
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Add a new person
+      tags:
+      - people
+    put:
+      consumes:
+      - application/json
+      description: Update person details in the database
+      parameters:
+      - description: 'Passport Number (format: ''serie number'')'
+        in: query
+        name: passport_number
+        required: true
+        type: string
+      - description: Surname
+        in: query
+        name: surname
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Patronymic
+        in: query
+        name: patronymic
+        type: string
+      - description: Address
+        in: query
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update a person
+      tags:
+      - people
+  /task:
+    get:
+      consumes:
+      - application/json
+      description: Get tasks for a specific person within a given time interval
+      parameters:
+      - description: ID of the person
+        in: query
+        name: peopleID
+        required: true
+        type: string
+      - description: Time interval (e.g., '1 day', '1 week')
+        in: query
+        name: interval
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schemas.TaskResult'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get tasks
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Create a new task for a specific person
+      parameters:
+      - description: ID of the person
+        in: query
+        name: peopleID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Task created successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new task
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Close a task for a specific person by updating the end time
+      parameters:
+      - description: ID of the person
+        in: query
+        name: peopleID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task closed successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Close a task
+      tags:
+      - tasks
+swagger: "2.0"
